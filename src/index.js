@@ -2,9 +2,13 @@ import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
 // Libraries
 import { GameEngine } from "react-game-engine";
+import { Web3ReactProvider } from "@web3-react/core";
+import Web3 from "web3";
+
 // Components
 import { Moose } from "./components/character-render/Moose";
 import { MoveMoose } from "./components/character-system/MooseMovements";
+import WalletConnection from "./components/wallet-connector/WalletConnection";
 // Assets
 import skyNight from "./assets/game-backgrounds/sky-night.jpg";
 
@@ -12,22 +16,32 @@ import "./index.css";
 
 import reportWebVitals from "./reportWebVitals";
 
+// Helper function
+function getLibrary(provider) {
+  return new Web3(provider);
+}
+
 export default class MooseFlight extends PureComponent {
   render() {
     return (
-      <GameEngine
-        style={{
-          width: 800,
-          height: 600,
-          backgroundImage: `url(${skyNight})`,
-          backgroundSize: "cover",
-          margin: "auto",
-        }}
-        systems={[MoveMoose]}
-        entities={{
-          mainCharacter: { x: 500, y: 100, renderer: <Moose /> },
-        }}
-      ></GameEngine>
+      <>
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <WalletConnection />
+        </Web3ReactProvider>
+        <GameEngine
+          style={{
+            width: 800,
+            height: 600,
+            backgroundImage: `url(${skyNight})`,
+            backgroundSize: "cover",
+            margin: "auto",
+          }}
+          systems={[MoveMoose]}
+          entities={{
+            mainCharacter: { x: 0, y: 0, renderer: <Moose /> },
+          }}
+        ></GameEngine>
+      </>
     );
   }
 }
